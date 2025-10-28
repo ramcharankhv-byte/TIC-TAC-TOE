@@ -73,7 +73,7 @@ body {
 }
 
 .turn-indicator{
-     background-color: #1C0F3C;
+    background-color: #1C0F3C;
     padding: 1rem;
     color: #CC4A8B;
     border-radius: 0.5rem;
@@ -192,7 +192,7 @@ body {
 .msg-box{
    background-color: #1C0F3C; /* optional: dark background for box */
     border: 2px solid #CC4A8B; /* the border you want */
-    padding: 2rem 4rem;
+    padding: 4rem 4rem;
     border-radius: 1rem;
     text-align: center;
    
@@ -203,6 +203,7 @@ body {
 }
 
 #newbtn {
+    margin-top: 3vh;
     padding: 1rem 2rem;
     font-size: 2vmin;
     color: #CC4A8B;
@@ -218,7 +219,7 @@ body {
 .hide {
     display: none;
 }
-* Responsive Design */
+/* Responsive Design */
 @media (max-width: 1024px) {
     .MAINHEADING {
         font-size: 7vmin;
@@ -268,4 +269,3 @@ body {
         gap: 1rem;
     }
 }
-
