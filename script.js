@@ -1,11 +1,11 @@
 let boxes = document.querySelectorAll(".box");
 let resetbtn = document.querySelector("#reset");
 let newGameBtn = document.querySelector("#newbtn");
-let msgContianer = document.querySelector(".msg-container");
+let msgContainer = document.querySelector(".msg-container");
 let msg = document.querySelector("#msg");
 let turnX = true; // true means X's turn, false means O's turn
 let count = 0;
-let starter = true; // To Track Draw
+let starter = true; // who started this round
 let score1 = 0;
 let score2 = 0;
 
@@ -37,7 +37,7 @@ let nextStartO = false; // false = X starts, true = O starts
 
 const showWinner = (winner) => {
     msg.innerText = `Player ${winner} Wins!`;
-    msgContianer.classList.remove("hide");
+    msgContainer.classList.remove("hide");
     disableBoxes();
 
     if (winner === "X") {
@@ -47,54 +47,45 @@ const showWinner = (winner) => {
         score2++;
         score2Display.innerText = score2;
     }
-
-    
 };
 
 const resetGame = () => {
-      // Flip for the next round
+    // Alternate starting player
     nextStartO = !nextStartO;
-    // Determine who starts this round based on nextStartO
-    turnX = !nextStartO; // if nextStartO = false → X starts, if true → O starts
+    turnX = !nextStartO; // if nextStartO = false → X starts, else O starts
+    starter = turnX; // remember who started this round
     count = 0;
     enableBoxes();
-    msgContianer.classList.add("hide");
-    starter = turnX;
-    // Update turn indicator
-    if (turnX) {
-        turnIndicator.innerText = "X's Turn";
-    } else {
-        turnIndicator.innerText = "O's Turn";
-    }
-    
-  
+    msgContainer.classList.add("hide");
+
+    turnIndicator.innerText = turnX ? "X's Turn" : "O's Turn";
 };
 
-const resetRound = () =>{
+const resetRound = () => {
     enableBoxes();
-    turnX = starter;
+    turnX = starter; // restore who started this round
     count = 0;
-}
+    msgContainer.classList.add("hide");
 
+    turnIndicator.innerText = turnX ? "X's Turn" : "O's Turn";
+};
 
 boxes.forEach((box) => {
     box.addEventListener("click", () => {
         if (turnX) {
             box.innerText = "X";
             turnIndicator.innerText = "O's Turn";
-            turnX = false;
         } else {
             box.innerText = "O";
             turnIndicator.innerText = "X's Turn";
-            turnX = true;
         }
 
         box.disabled = true;
+        turnX = !turnX;
         count++;
 
-        let iswinner = checkWinner();
-
-        if (count === 9 && iswinner === false) {
+        let isWinner = checkWinner();
+        if (count === 9 && isWinner === false) {
             gameDraw();
         }
     });
@@ -102,36 +93,30 @@ boxes.forEach((box) => {
 
 const gameDraw = () => {
     msg.innerText = `Game was a Draw.`;
-    msgContianer.classList.remove("hide");
+    msgContainer.classList.remove("hide");
     disableBoxes();
-
-    const nextStarter = nextStartO ? "O" : "X";
-    msg.innerText += `\nNext round starts with ${nextStarter}.`;
 };
 
 const disableBoxes = () => {
-    for (let box of boxes) {
-        box.disabled = true;
-    }
+    boxes.forEach((box) => (box.disabled = true));
 };
 
 const enableBoxes = () => {
-    for (let box of boxes) {
+    boxes.forEach((box) => {
         box.disabled = false;
         box.innerText = "";
-    }
-    starter = turnX;
+    });
 };
 
 const checkWinner = () => {
     for (let pattern of winPatterns) {
-        let posval1 = boxes[pattern[0]].innerText;
-        let posval2 = boxes[pattern[1]].innerText;
-        let posval3 = boxes[pattern[2]].innerText;
+        let pos1 = boxes[pattern[0]].innerText;
+        let pos2 = boxes[pattern[1]].innerText;
+        let pos3 = boxes[pattern[2]].innerText;
 
-        if (posval1 !== "" && posval2 !== "" && posval3 !== "") {
-            if (posval1 === posval2 && posval2 === posval3) {
-                showWinner(posval1);
+        if (pos1 !== "" && pos2 !== "" && pos3 !== "") {
+            if (pos1 === pos2 && pos2 === pos3) {
+                showWinner(pos1);
                 return true;
             }
         }
@@ -144,11 +129,14 @@ let resetScoresBtn = document.querySelector("#resetScores");
 resetScoresBtn.addEventListener("click", () => {
     score1 = 0;
     score2 = 0;
-    turnX=true;
-    nextStartO=false;
+    turnX = true;
+    nextStartO = false;
+    starter = true;
     turnIndicator.innerText = "X's Turn";
+    enableBoxes();
     score1Display.innerText = score1;
     score2Display.innerText = score2;
+    msgContainer.classList.add("hide");
 });
 
 newGameBtn.addEventListener("click", resetGame);
